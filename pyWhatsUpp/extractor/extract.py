@@ -10,8 +10,9 @@ def _copy_files(info, whatsapp_dirs):
     if (whatsapp_dirs is None) or (len(whatsapp_dirs) < 1):
         return False 
 
-    # Create input dir
+    # Create input and output dirs
     os.mkdir(info.input)
+    os.mkdir(info.output)
 
     for path in whatsapp_dirs:
         sanitizied_path = path.replace(':', '_')
@@ -22,6 +23,8 @@ def _copy_files(info, whatsapp_dirs):
         # shutil.copytree uses shutil.copy2 in the background 
         # (See https://docs.python.org/3/library/shutil.html)
         shutil.copytree(path, sanitizied_path)
+
+    info.log.info(f"Created new session folder containing a total of '{len(whatsapp_dirs)}' sub-folders")
 
     return True
 

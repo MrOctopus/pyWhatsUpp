@@ -1,7 +1,33 @@
+import sys
 import os
 import platform
+import logging
+import logging.config
 
 from datetime import datetime
+
+class SetupInfo:
+    __slots__ = (
+        'timestamp',
+        'log',
+        'os',
+        'input',
+        'output',
+        'path',
+        'auto'
+    )
+
+    def __init__(self):
+        # Internal
+        self.timestamp = datetime.now().strftime("%d-%m-%Y %H-%M-%S")
+        self.log = None
+
+        # User defined
+        self.os = ''
+        self.input = ''
+        self.output = ''
+        self.path = ''
+        self.auto = True
 
 def _determine_os():
     os = platform.system()
@@ -12,8 +38,33 @@ def _determine_os():
 
     return os
 
+def _init_logger(args):
+    log_format = "%(asctime)s [%(levelname).4s] %(message)s"
+
+    logging.basicConfig(
+        filename=os.path.join(os.path.dirname(__file__), '..', "log.txt"),
+        filemode='a',
+        level=logging.NOTSET, 
+        format=log_format
+    )
+
+    log = logging.getLogger("pyWhatsUpp")
+
+    if args.verbose:
+        formatter = logging.Formatter(log_format)
+
+        console = logging.StreamHandler()
+        console.setLevel(logging.INFO)
+        console.setFormatter(formatter)
+
+        log.addHandler(console)
+
+    return log
+
+
 def run(args):
-    info = Setup_Info()
+    info = SetupInfo()
+    info.log = _init_logger(args)
 
     # We get the top_dir using the __file__ variable to ensure
     # the CWD does not affect pathing
@@ -24,18 +75,14 @@ def run(args):
     # If no input folders exist make them
     if not os.path.isdir(input_dir):
         os.mkdir(input_dir)
+        info.log.info("No 'original' directory found, creating a new one")
     if not os.path.isdir(output_dir):
         os.mkdir(output_dir)
+        info.log.info("No 'processed' directory found, creating a new one")
 
     # Set info specific input:
     info.input = os.path.join(input_dir, info.timestamp)
     info.output = os.path.join(output_dir, info.timestamp)
-
-    # Determine OS if no arg has been given
-    if args.os:
-        info.os = args.os
-    else:
-        info.os = _determine_os()
 
     # Set extraction to automatic if flag is set
     info.auto = args.auto
@@ -44,22 +91,10 @@ def run(args):
     if args.path:
         info.path = os.path.abspath(args.path)
 
+    # Determine OS if no arg has been given
+    if args.os:
+        info.os = args.os
+    else:
+        info.os = _determine_os()
+
     return info
-
-class Setup_Info:
-    __slots__ = (
-        'timestamp',
-        'os',
-        'input',
-        'output',
-        'path',
-        'auto'
-    )
-
-    def __init__(self):
-        self.timestamp = datetime.now().strftime("%d-%m-%Y %H-%M-%S")
-        self.os = ''
-        self.input = ''
-        self.output = ''
-        self.path = ''
-        self.auto = True

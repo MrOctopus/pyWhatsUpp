@@ -27,14 +27,10 @@ def run(info):
     if len(found_images) < 1:
         return False
 
-    # We don't care if this fails
-    try:
-        os.mkdir(info.output)
-    except FileExistsError:
-        pass
-
-    images_dir = os.path.join(info.output, "Avatars")
+    images_dir = os.path.join(info.output, "Contact Avatars")
     os.mkdir(images_dir)
+
+    info.log.info(f"Created new contact avatars folder containing a total of '{len(found_images)}' images")
 
     for i, image in enumerate(found_images):
         image_path = os.path.join(images_dir, f"{i}.jpg")
