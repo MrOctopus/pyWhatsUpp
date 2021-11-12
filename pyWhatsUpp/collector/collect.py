@@ -1,8 +1,10 @@
-def collect_images():
-    pass
-
-def collect_logs():
-    pass
+from . import collect_images
+from . import collect_logs
 
 def run(info):
-    return True
+    successful_steps = 0
+
+    successful_steps += int(collect_images.run(info))
+    successful_steps += int(collect_logs.run(info))
+
+    return successful_steps > 0
