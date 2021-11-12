@@ -1,2 +1,2 @@
-__all__ = ('collect_images', 'collect_logs', 'collector')
-from .collector import run
+__all__ = ('collect_images', 'collect_logs', 'collect')
+from .collect import run
