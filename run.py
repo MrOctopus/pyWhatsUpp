@@ -1,3 +1,5 @@
+__author__ = "MrOctopus / Neverlost"
+
 import pyWhatsUpp.arguments as arguments
 import pyWhatsUpp.setup as setup
 import pyWhatsUpp.extractor as extractor
@@ -11,6 +13,7 @@ def main():
 
     info.log.info(f"Automatic WhatsApp folder detection is set to: {info.auto}")
     info.log.info(f"The operating system is set to: {info.os}")
+    info.log.info("Session logs are stored in log.txt")
     
     if args.path:
         info.log.info(f"A manual input has been set to: {info.path}")
@@ -20,7 +23,6 @@ def main():
     info.log.info("- Extracting all WhatsApp artifacts -")
     if not extractor.run(info):
         info.log.error("- Failed to find any WhatsApp artifacts, aborting. Consider trying other arguments -")
-        info.log.info("Session logs can be found in log.txt")
         # We return here because the other steps are not possible if the extractor did not finish
         return
 
@@ -31,9 +33,6 @@ def main():
     info.log.info("- Successfully extracted and processed all WhatsApp artifacts -")
     info.log.info(f"Extracted session data can be found at: {info.input}")
     info.log.info(f"Processed session data can be found at: {info.output}")
-    info.log.info("Session logs can be found in log.txt")
-
-    # SUCCESS
 
 if __name__ == "__main__":
     main()
