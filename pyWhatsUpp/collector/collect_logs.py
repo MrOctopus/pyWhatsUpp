@@ -5,6 +5,7 @@ import binascii
 import re
 
 _EVENT_RE = re.compile("6c6f6722(.*?)74696d657374616d70")
+_USERNAME_RE = re.compile("2265787069726174696f6e22.*?22(.*?)22")
 
 def _collect_general_logs(info, logs):
     if len(logs) < 1:
@@ -76,30 +77,77 @@ def _collect_event_logs(info, logs):
 
     return True
 
-def run(info):
-    input_glob = os.path.join(info.input, '**', '*[Ll][Oo][Gg]*')
-    glob_matches = glob.glob(input_glob, recursive=True)
+def _carve_file_for_username(file_path):
+    usernames = []
 
-    # Could not find any log files
-    if not glob_matches:
+    with open(file_path, 'rb') as file:
+        hexdump = binascii.hexlify(file.read())
+
+        print(file_path)
+
+        for match in _USERNAME_RE.finditer(hexdump.decode()):
+            print("Hey!")
+            username = binascii.a2b_hex(match.group(1)).decode()
+            usernames.append(f"Username found: {username}")
+
+    return usernames
+
+def _collect_username_logs(info, logs):
+    if len(logs) < 1:
         return False
 
+    num_usernames = 0
+
+    for log in logs:
+        usernames = _carve_file_for_username(log)
+
+        if len(usernames) < 1:
+            continue
+
+        info.extra_data.append('\n'.join(usernames))
+        num_usernames += 1
+
+    if num_usernames < 1:
+        return False
+
+    return True
+
+def run(info):
+    # Case insensitive search for Log or Ldb files
+    log_matches = glob.glob(
+        os.path.join(info.input, '**', "*[Ll][Oo][Gg]*"), 
+        recursive=True)
     general_logs = []
     process_logs = []
     event_logs = []
 
-    for log in glob_matches: 
-        if "process" in log:
-            process_logs.append(log)
-        elif "index" in log:
-            event_logs.append(log)
+    for match in log_matches: 
+        # We only care about file matches
+        if not os.path.isfile(match):
+            continue
+
+        if "process" in match:
+            process_logs.append(match)
+        elif "leveldb" in match:
+            event_logs.append(match)
         else:
-            general_logs.append(log)
+            general_logs.append(match)
+
+    ldb_matches = glob.glob(
+        os.path.join(info.input, '**', "*.ldb"), 
+        recursive=True)
+    username_logs = []
+
+    for match in ldb_matches:
+        # We only care about file matches
+        if os.path.isfile(match):
+            username_logs.append(match)
 
     successful = 0
     
     successful += int(_collect_general_logs(info, general_logs))
     successful += int(_collect_process_logs(info, process_logs))
     successful += int(_collect_event_logs(info, event_logs))
+    successful += int(_collect_username_logs(info, username_logs))
 
     return successful > 0
