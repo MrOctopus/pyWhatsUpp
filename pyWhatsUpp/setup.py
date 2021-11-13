@@ -9,6 +9,7 @@ from datetime import datetime
 class SetupInfo:
     __slots__ = (
         'timestamp',
+        'extra_data',
         'log',
         'os',
         'input',
@@ -20,6 +21,7 @@ class SetupInfo:
     def __init__(self):
         # Internal
         self.timestamp = datetime.now().strftime("%d-%m-%Y %H-%M-%S")
+        self.extra_data = []
         self.log = None
 
         # User defined
@@ -28,6 +30,20 @@ class SetupInfo:
         self.output = ''
         self.path = ''
         self.auto = True
+
+    def dump_to_output(self):
+        if not os.path.exists(self.output):
+            return
+
+        extra_data_dest = os.path.join(self.output, "general.txt")
+
+        with open(extra_data_dest, 'w+') as file:
+            file.write(f"pyWhatsUpp Timestamp: {self.timestamp}\n")
+
+            if self.extra_data:
+                file.write('\n'.join(self.extra_data))
+
+
 
 def _determine_os():
     os = platform.system()

@@ -1,4 +1,5 @@
 import os
+import shutil
 import binascii
 import re
 
@@ -33,6 +34,7 @@ def _collect_images(info, avatar_caches):
             with open(image_dest,'wb') as file:
                 file.write(image)
 
+            shutil.copystat(avatar_cache, image_dest)
             num_images += 1
 
     if num_images < 1:

@@ -30,7 +30,9 @@ def main():
     if not collector.run(info):
         info.log.error(" - Failed to find and process any relevant forensic WhatsApp artifacts -")
 
-    info.log.info("- Successfully extracted and processed all WhatsApp artifacts -")
+    info.dump_to_output()
+
+    info.log.info("- Successfully finished running pyWhatsUpp -")
     info.log.info(f"Extracted session data can be found at: {info.input}")
     info.log.info(f"Processed session data can be found at: {info.output}")
 
