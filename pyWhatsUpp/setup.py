@@ -93,10 +93,8 @@ def run(args):
     # If no input folders exist make them
     if not os.path.isdir(input_dir):
         os.mkdir(input_dir)
-        info.log.info("No 'original' directory found, creating a new one")
     if not os.path.isdir(output_dir):
         os.mkdir(output_dir)
-        info.log.info("No 'processed' directory found, creating a new one")
 
     # Set info specific input:
     info.input = os.path.join(input_dir, info.timestamp)
