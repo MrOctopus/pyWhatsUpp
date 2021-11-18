@@ -20,6 +20,10 @@ A forensic tool to automatically extract as many artifacts as possible from the 
 * Event logs
 * WhatsApp username
 
+## Interpretation
+
+* pyWhatsUpp will try to enrich event logs with explanations and interpretations
+
 ## Planned features
 
 1. Better logging (Very soon)
