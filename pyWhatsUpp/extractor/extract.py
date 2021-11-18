@@ -39,6 +39,7 @@ def run(info):
 
     # Manual
     if (not info.auto) and (info.path):
+        print("manual")
         whatsapp_dirs = [info.path]
     # Automatic
     elif os == "Windows":

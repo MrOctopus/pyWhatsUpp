@@ -7,32 +7,6 @@ import re
 _EVENT_RE = re.compile("6c6f6722(.*?)74696d657374616d70")
 _USERNAME_RE = re.compile("2265787069726174696f6e22.*?22(.*?)22")
 
-def _collect_general_logs(info, logs):
-    if len(logs) < 1:
-        return False
-
-    general_logs_dir = os.path.join(info.output, "General Logs")
-    os.mkdir(general_logs_dir)
-
-    for i, log in enumerate(logs):
-        log_dest = os.path.join(general_logs_dir, f"{i}_{os.path.basename(log)}")
-        shutil.copy2(log, log_dest)
-
-    return True
-
-def _collect_process_logs(info, logs):
-    if len(logs) < 1:
-        return False
-
-    process_logs_dir = os.path.join(info.output, "Process Logs")
-    os.mkdir(process_logs_dir)
-
-    for i, log in enumerate(logs):
-        log_dest = os.path.join(process_logs_dir, f"{i}_{os.path.basename(log)}")
-        shutil.copy2(log, log_dest)
-    
-    return True
-
 def _carve_file_for_events(file_path):
     events = []
 
@@ -50,12 +24,50 @@ def _carve_file_for_events(file_path):
 
     return events
 
+def _carve_file_for_username(file_path):
+    usernames = []
+
+    with open(file_path, 'rb') as file:
+        hexdump = binascii.hexlify(file.read())
+
+        for match in _USERNAME_RE.finditer(hexdump.decode()):
+            username = binascii.a2b_hex(match.group(1)).decode()
+            usernames.append(f"Possible username,\"{username}\"")
+
+    return usernames
+
+def _collect_general_logs(info, logs):
+    if len(logs) < 1:
+        return False
+
+    general_logs_dir = os.path.join(info.output, "Chromium", "General Logs")
+    os.makedirs(general_logs_dir, exist_ok=True)
+
+    for i, log in enumerate(logs):
+        log_dest = os.path.join(general_logs_dir, f"{i}_{os.path.basename(log)}")
+        shutil.copy2(log, log_dest)
+
+    return True
+
+def _collect_process_logs(info, logs):
+    if len(logs) < 1:
+        return False
+
+    process_logs_dir = os.path.join(info.output, "Chromium", "Process Logs")
+    os.makedirs(process_logs_dir, exist_ok=True)
+
+    for i, log in enumerate(logs):
+        log_dest = os.path.join(process_logs_dir, f"{i}_{os.path.basename(log)}")
+        shutil.copy2(log, log_dest)
+    
+    return True
+
 def _collect_event_logs(info, logs):
     if len(logs) < 1:
         return False
 
-    event_logs_dir = os.path.join(info.output, "Event Logs")
-    os.mkdir(event_logs_dir)
+    event_logs_dir = os.path.join(info.output, "Chromium", "Event Logs")
+    os.makedirs(event_logs_dir, exist_ok=True)
     num_logs = 0
 
     for log in logs:
@@ -77,21 +89,6 @@ def _collect_event_logs(info, logs):
 
     return True
 
-def _carve_file_for_username(file_path):
-    usernames = []
-
-    with open(file_path, 'rb') as file:
-        hexdump = binascii.hexlify(file.read())
-
-        print(file_path)
-
-        for match in _USERNAME_RE.finditer(hexdump.decode()):
-            print("Hey!")
-            username = binascii.a2b_hex(match.group(1)).decode()
-            usernames.append(f"Username found: {username}")
-
-    return usernames
-
 def _collect_username_logs(info, logs):
     if len(logs) < 1:
         return False
@@ -112,8 +109,8 @@ def _collect_username_logs(info, logs):
 
     return True
 
-def run(info):
-    # Case insensitive search for Log or Ldb files
+def collect_logs(info):
+    # Case insensitive search for Log files
     log_matches = glob.glob(
         os.path.join(info.input, '**', "*[Ll][Oo][Gg]*"), 
         recursive=True)
@@ -142,9 +139,9 @@ def run(info):
         # We only care about file matches
         if os.path.isfile(match):
             username_logs.append(match)
-
-    successful = 0
     
+    successful = 0
+
     successful += int(_collect_general_logs(info, general_logs))
     successful += int(_collect_process_logs(info, process_logs))
     successful += int(_collect_event_logs(info, event_logs))

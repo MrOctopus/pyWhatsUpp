@@ -15,12 +15,13 @@ class SetupInfo:
         'input',
         'output',
         'path',
-        'auto'
+        'auto',
+        'hash'
     )
 
     def __init__(self):
         # Internal
-        self.timestamp = datetime.now().strftime("%d-%m-%Y %H-%M-%S")
+        self.timestamp = datetime.now().strftime("%Y-%m-%d %H-%M-%S")
         self.extra_data = []
         self.log = None
 
@@ -30,15 +31,16 @@ class SetupInfo:
         self.output = ''
         self.path = ''
         self.auto = True
+        self.hash = False
 
     def dump_to_output(self):
         if not os.path.exists(self.output):
             return
 
-        extra_data_dest = os.path.join(self.output, "general.txt")
+        extra_data_dest = os.path.join(self.output, "general.csv")
 
         with open(extra_data_dest, 'w+') as file:
-            file.write(f"pyWhatsUpp Timestamp: {self.timestamp}\n")
+            file.write(f"pyWhatsUpp Timestamp,{self.timestamp}\n")
 
             if self.extra_data:
                 file.write('\n'.join(self.extra_data))
@@ -102,6 +104,7 @@ def run(args):
 
     # Set extraction to automatic if flag is set
     info.auto = args.auto
+    info.hash = args.hash
 
     # Set extract path if given
     if args.path:

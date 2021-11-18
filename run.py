@@ -4,6 +4,7 @@ import pyWhatsUpp.arguments as arguments
 import pyWhatsUpp.setup as setup
 import pyWhatsUpp.extractor as extractor
 import pyWhatsUpp.collector as collector
+import pyWhatsUpp.hasher as hasher
 
 def main():
     args = arguments.get()
@@ -29,6 +30,11 @@ def main():
     info.log.info("- Processing relevant WhatsApp forensic artifacts -")
     if not collector.run(info):
         info.log.error(" - Failed to find and process any relevant forensic WhatsApp artifacts -")
+
+    if info.hash:
+        info.log.info("- Hashing all extracted WhatsApp forensic artifacts -")     
+        if not hasher.run(info):
+            info.log.error(" - Failed to generate hashes -")
 
     info.dump_to_output()
 

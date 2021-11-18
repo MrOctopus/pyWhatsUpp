@@ -1,4 +1,5 @@
 import os
+import glob
 import shutil
 import binascii
 import re
@@ -17,12 +18,12 @@ def _carve_file_for_jpeg(file_path):
 
     return images
 
-def _collect_images(info, avatar_caches):
+def _collect_avatar_images(info, avatar_caches):
     if len(avatar_caches) < 1:
         return False
 
-    images_dir = os.path.join(info.output, "Contact Avatars")
-    os.mkdir(images_dir)
+    images_dir = os.path.join(info.output, "Chromium", "Contact Avatars")
+    os.makedirs(images_dir, exist_ok=True)
     num_images = 0
 
     for avatar_cache in avatar_caches:
@@ -43,14 +44,15 @@ def _collect_images(info, avatar_caches):
     info.log.info(f"Created new contact avatars folder containing a total of '{num_images}' images")
     return True
 
-def run(info):
+def collect_images(info):
+    cache_matches = glob.glob(
+        os.path.join(info.input, '**', "*data_2"), 
+        recursive=True)
     avatar_caches = []
 
-    for _dir in os.listdir(info.input):
-        # See https://blog.group-ib.com/whatsapp_forensic_artifacts
-        cache_file = os.path.join(info.input, _dir, "Cache", "data_2")
-        
-        if os.path.isfile(cache_file):
-            avatar_caches.append(cache_file)
+    for match in cache_matches: 
+        # We only care about file matches
+        if os.path.isfile(match):
+            avatar_caches.append(match)
 
-    return _collect_images(info, avatar_caches)
+    return _collect_avatar_images(info, avatar_caches)
