@@ -14,7 +14,7 @@ def main():
 
     info.log.info(f"Automatic WhatsApp folder detection is set to: {info.auto}")
     info.log.info(f"The operating system is set to: {info.os}")
-    info.log.info("Session logs are stored in log.txt")
+    info.log.info("Session logs are stored in log.csv")
     
     if args.path:
         info.log.info(f"A manual input has been set to: {info.path}")
@@ -27,9 +27,9 @@ def main():
         # We return here because the other steps are not possible if the extractor did not finish
         return
 
-    info.log.info("- Processing relevant WhatsApp forensic artifacts -")
+    info.log.info("- Collecting relevant WhatsApp forensic artifacts -")
     if not collector.run(info):
-        info.log.error(" - Failed to find and process any relevant forensic WhatsApp artifacts -")
+        info.log.error(" - Failed to find and collect any relevant forensic WhatsApp artifacts -")
 
     if info.hash:
         info.log.info("- Hashing all extracted WhatsApp forensic artifacts -")     

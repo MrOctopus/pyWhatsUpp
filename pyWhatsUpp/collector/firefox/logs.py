@@ -3,75 +3,58 @@ import glob
 import shutil
 
 from pyWhatsUpp.utils.mozidb import mozidb
+from pyWhatsUpp.utils.interpreter import get_event_type
 
-def _carve_indexdb_for_events(file_path):
+_log_counter = 0
+
+def _collect_event_logs(info, original_file, db_data):
+    global _log_counter
     events = []
 
-    try:
-        db = mozidb.IndexedDB(file_path)
+    for key in db_data:
+        _dict = db_data[key]
 
-        for row in db.read_objects().values():
-            try:
-                event = row['log'][5:]
-                events.append(event)
-            except KeyError:
-                pass
-    except Exception:
-        pass
+        if "log" in _dict:
+            events.append((
+                key,
+                _dict["log"][5:]
+            ))
 
-    return events
-
-def _carve_indexdb_for_username(file_path):
-    usernames = []
-
-    db = mozidb.IndexedDB(file_path)
-    return usernames
-
-def _collect_event_logs(info, databases):
-    if len(databases) < 1:
+    if len(events) < 1:
         return False
 
     event_logs_dir = os.path.join(info.output, "Firefox", "Event Logs")
     os.makedirs(event_logs_dir, exist_ok=True)
-    num_logs = 0
+    log_file = os.path.join(event_logs_dir, f"{_log_counter}_{os.path.basename(original_file)}")
 
-    for db in databases:
-        events = _carve_indexdb_for_events(db)
-
-        if len(events) < 1:
-            continue
-
-        log_dest = os.path.join(event_logs_dir, f"{num_logs}_{os.path.basename(db)}")
-
-        with open(log_dest, 'w+') as file:
-            file.write('\n'.join(events))
-        
-        shutil.copystat(db, log_dest)
-        num_logs += 1
-
-    if num_logs < 1:
-        return False
+    with open(log_file, 'w+') as file:
+        for key, event in events:
+            db_data.pop(key)
+            file.write(f"{event} | {get_event_type(event)}\n")
+    
+    shutil.copystat(original_file, log_file)
+    _log_counter += 1
 
     return True
 
-def _collect_username_logs(info, databases):
-    if len(databases) < 1:
+def _collect_general_data(info, db_data):    
+    data = []
+    
+    for _dict in db_data.values():
+        if "key" in _dict and "value" in _dict:
+            data.append((
+                _dict["key"],
+                _dict["value"]
+            ))
+
+    if len(data) < 1:
         return False
 
-    num_usernames = 0
+    for key, value in data:
+        info.extra_data.append(f"\"{key}\",\"{value}\"")
 
-    for db in databases:
-        usernames = _carve_indexdb_for_username(db)
-
-        if len(usernames) < 1:
-            continue
-
-        info.extra_data.append('\n'.join(usernames))
-        num_usernames += 1
-
-    if num_usernames < 1:
-        return False
-
+    db_data.clear()
+    
     return True
 
 def collect_logs(info):
@@ -79,18 +62,20 @@ def collect_logs(info):
     sqlite_matches = glob.glob(
         os.path.join(info.input, '**', "*wcaw.sqlite"), 
         recursive=True)
-    sqlite_databases = []
+    successful = 0
 
     for match in sqlite_matches: 
         # We only care about file matches
         if not os.path.isfile(match):
             continue
 
-        sqlite_databases.append(match)
-    
-    successful = 0
+        try:
+            db = mozidb.IndexedDB(match)
+            db_data = db.read_objects()
+        except Exception:
+            continue
 
-    successful += int(_collect_event_logs(info, sqlite_databases))
-    #successful += int(_collect_username_logs(info, sqlite_databases))
+        successful += int(_collect_event_logs(info, match, db_data))
+        successful += int(_collect_general_data(info, db_data))
 
     return successful > 0

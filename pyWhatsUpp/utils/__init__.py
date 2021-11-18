@@ -1,1 +1,1 @@
-__all__ = ('mozidb', 'snappy')
+__all__ = ('interpreter', 'mozidb', 'snappy')
