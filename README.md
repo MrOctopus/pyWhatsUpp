@@ -2,6 +2,10 @@
 
 A forensic tool to automatically extract as many artifacts as possible from the WhatsApp desktop/web client
 
+## Requirements
+
+* Python 3.6+
+
 ## Features
 
 ### Extraction

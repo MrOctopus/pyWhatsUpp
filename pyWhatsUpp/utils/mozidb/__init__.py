@@ -1,1 +1,1 @@
-__all__ = ('mozidb', 'mozserical')
+__all__ = ('mozidb', 'mozserial')
