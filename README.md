@@ -69,8 +69,10 @@ python run.py -i folderpath
 
 Run pyWhatsUpp on a mounted windows installation drive and perform automatic extraction:
 python run.py -a -os Windows -i mountedrootpath
-
 ```
+### Notes
+
+Whilst pyWhatsUpp attempts to preserve the file metadata of extracted artifacts the best it can, a separate forensics image should also be made to ensure that the original file metadata can be compared against. Noteably, the python library that pyWhatsUpp uses to copy metadata (shutil) is not reliable enough to ensure the integrity of Accessed and Created timestamps.
 
 ## Thanks to
 

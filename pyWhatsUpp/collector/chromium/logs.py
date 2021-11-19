@@ -36,12 +36,12 @@ def _collect_general_data(info, db_data):
     
     for row in db_data["user"].iterate_records():
         data.append((
-            row.key.raw_key,
+            row.key.value,
             row.value
         ))
     for row in db_data["wam"].iterate_records():
         data.append((
-            row.key.raw_key,
+            row.key.value,
             row.value
         ))
 
@@ -51,7 +51,6 @@ def _collect_general_data(info, db_data):
     info.extra_data.append("Chromium data,below\n")
     for key, value in data:
         info.extra_data.append(f"\"{key}\",\"{value}\"")
-    info.extra_data.append("\n")
     
     return True
 

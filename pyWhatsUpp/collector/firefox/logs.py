@@ -53,7 +53,6 @@ def _collect_general_data(info, db_data):
     info.extra_data.append("Firefox data,below\n")
     for key, value in data:
         info.extra_data.append(f"\"{key}\",\"{value}\"")
-    info.extra_data.append("\n")
 
     db_data.clear()
     
