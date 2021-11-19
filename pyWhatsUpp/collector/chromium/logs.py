@@ -48,9 +48,10 @@ def _collect_general_data(info, db_data):
     if len(data) < 1:
         return False
 
-    info.extra_data.append("Chromium data,below\n")
+    info.extra_data.append("Chromium data,below")
     for key, value in data:
         info.extra_data.append(f"\"{key}\",\"{value}\"")
+    info.extra_data.append("\n")
     
     return True
 
