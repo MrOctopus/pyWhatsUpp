@@ -17,7 +17,7 @@ import sqlite3
 import time
 import typing as ty
 
-from pyWhatsUpp.utils import snappy
+from pyWhatsUpp.utils.ccl_chrome_indexddb import ccl_simplesnappy
 from . import mozserial
 
 
@@ -276,7 +276,7 @@ class IndexedDB(sqlite3.Connection):
         
         # Parse data
         with io.BytesIO(data) as buff:
-            decompressed = snappy.decompress(buff)
+            decompressed = ccl_simplesnappy.decompress(buff)
         
         reader = mozserial.Reader(io.BufferedReader(io.BytesIO(decompressed)))
         return reader.read()
@@ -295,7 +295,7 @@ class IndexedDB(sqlite3.Connection):
             
             # Parse data
             with io.BytesIO(data) as buff:
-                decompressed = snappy.decompress(buff)
+                decompressed = ccl_simplesnappy.decompress(buff)
             
             reader = mozserial.Reader(io.BufferedReader(io.BytesIO(decompressed)))
             content = reader.read()

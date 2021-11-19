@@ -1,1 +1,1 @@
-__all__ = ('interpreter', 'mozidb', 'snappy')
+__all__ = ('ccl_chrome_indexddb', 'interpreter', 'mozidb')

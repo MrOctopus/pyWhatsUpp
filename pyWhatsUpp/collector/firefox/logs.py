@@ -25,7 +25,7 @@ def _collect_event_logs(info, original_file, db_data):
 
     event_logs_dir = os.path.join(info.output, "Firefox", "Event Logs")
     os.makedirs(event_logs_dir, exist_ok=True)
-    log_file = os.path.join(event_logs_dir, f"{_log_counter}_{os.path.basename(original_file)}")
+    log_file = os.path.join(event_logs_dir, f"{_log_counter}.txt")
 
     with open(log_file, 'w+') as file:
         for key, event in events:
@@ -50,8 +50,10 @@ def _collect_general_data(info, db_data):
     if len(data) < 1:
         return False
 
+    info.extra_data.append("Firefox data,below\n")
     for key, value in data:
         info.extra_data.append(f"\"{key}\",\"{value}\"")
+    info.extra_data.append("\n")
 
     db_data.clear()
     
@@ -78,4 +80,4 @@ def collect_logs(info):
         successful += int(_collect_event_logs(info, match, db_data))
         successful += int(_collect_general_data(info, db_data))
 
-    return successful > 0
+    return successful

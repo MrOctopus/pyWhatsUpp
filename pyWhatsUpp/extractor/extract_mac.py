@@ -36,7 +36,8 @@ def _get_user_whatsapp_locations(root, username):
             os.path.join(user_dir, "Library", "Application Support", "WhatsApp"),
             os.path.join(user_dir, "Library", "Application Support", "Google", "Chrome", "Default", "IndexedDB", "https_web.whatsapp.com_0.indexeddb.leveldb"),
             os.path.join(user_dir, "Library", "Application Support", "Microsoft", "Edge", "Default", "IndexedDB", "https_web.whatsapp.com_0.indexeddb.leveldb"),
-            os.path.join(user_dir, "Library", "Application Support", "BraveSoftware", "Brave-Browser", "Default", "IndexedDB", "https_web.whatsapp.com_0.indexeddb.leveldb")
+            os.path.join(user_dir, "Library", "Application Support", "BraveSoftware", "Brave-Browser", "Default", "IndexedDB", "https_web.whatsapp.com_0.indexeddb.leveldb"),
+            os.path.join(user_dir, "Library", "Application Support", "Opera Software", "Opera Stable", "IndexedDB", "https_web.whatsapp.com_0.indexeddb.leveldb"),
         )
 
     return user_whatsapp_locations
@@ -99,10 +100,9 @@ def run(info):
         possible_whatsapp_locations.extend(_get_user_firefox_whatsapp_locations(root, username))
         possible_whatsapp_locations.extend(_get_user_whatsapp_locations_advanced(root, username))
 
-    found_whatsapp_locations = []
-
-    for _dir in possible_whatsapp_locations:
-        if os.path.isdir(_dir):
-            found_whatsapp_locations.append(_dir)
+    found_whatsapp_locations = [
+        _dir for _dir in possible_whatsapp_locations
+        if os.path.isdir(_dir)
+    ]
 
     return found_whatsapp_locations

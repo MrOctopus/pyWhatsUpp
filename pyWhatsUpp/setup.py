@@ -40,7 +40,7 @@ class SetupInfo:
         extra_data_dest = os.path.join(self.output, "general.csv")
 
         with open(extra_data_dest, 'w+') as file:
-            file.write(f"pyWhatsUpp Timestamp,{self.timestamp}\n")
+            file.write(f"pyWhatsUpp Timestamp,{self.timestamp}\n\n")
 
             if self.extra_data:
                 file.write('\n'.join(self.extra_data))

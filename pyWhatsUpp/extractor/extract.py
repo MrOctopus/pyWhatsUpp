@@ -30,7 +30,7 @@ def _copy_files(info, whatsapp_dirs):
             info.log.error("This might have occured because a WhatsApp session is currently running")
 
 
-    info.log.info(f"Created new session folder containing a total of '{len(whatsapp_dirs)}' sub-folders")
+    info.log.info(f"Extracted a total of '{len(whatsapp_dirs)}' WhatsApp data folders")
 
     return True
 
@@ -49,11 +49,4 @@ def run(info):
     elif os == "Linux":
         whatsapp_dirs = extract_linux.run(info)
 
-    # Copy files
-    if not _copy_files(info, whatsapp_dirs):
-        return False
-
-    # Generate file hashes if flag is enabled
-    # TBD
-
-    return True
+    return _copy_files(info, whatsapp_dirs)

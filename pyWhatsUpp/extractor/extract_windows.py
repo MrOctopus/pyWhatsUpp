@@ -37,9 +37,10 @@ def _get_user_whatsapp_locations(root, username):
             os.path.join(user_dir, "AppData", "Local", "WhatsApp"),
             os.path.join(user_dir, "AppData", "Local", "VirtualStore", "Program Files", "WhatsApp"),
             os.path.join(user_dir, "AppData", "Local", "VirtualStore", "Program Files (x86)", "WhatsApp"),
-            os.path.join(user_dir, "Appdata", "Local", "Google", "Chrome", "User Data", "Default", "IndexedDB", "https_web.whatsapp.com_0.indexeddb.leveldb"),
-            os.path.join(user_dir, "Appdata", "Local", "Microsoft", "Edge", "User Data", "Default", "IndexedDB", "https_web.whatsapp.com_0.indexeddb.leveldb"),
-            os.path.join(user_dir, "Appdata", "Local", "BraveSoftware", "Brave-Browser", "User Data", "Default", "IndexedDB", "https_web.whatsapp.com_0.indexeddb.leveldb")
+            os.path.join(user_dir, "AppData", "Local", "Google", "Chrome", "User Data", "Default", "IndexedDB", "https_web.whatsapp.com_0.indexeddb.leveldb"),
+            os.path.join(user_dir, "AppData", "Local", "Microsoft", "Edge", "User Data", "Default", "IndexedDB", "https_web.whatsapp.com_0.indexeddb.leveldb"),
+            os.path.join(user_dir, "AppData", "Local", "BraveSoftware", "Brave-Browser", "User Data", "Default", "IndexedDB", "https_web.whatsapp.com_0.indexeddb.leveldb"),
+            os.path.join(user_dir, "AppData", "Roaming", "Opera Software", "Opera Stable", "IndexedDB", "https_web.whatsapp.com_0.indexeddb.leveldb")
         )
 
     return user_whatsapp_locations
@@ -82,10 +83,9 @@ def run(info):
         possible_whatsapp_locations.extend(_get_user_whatsapp_locations(root, username))
         possible_whatsapp_locations.extend(_get_user_firefox_whatsapp_locations(root, username))
 
-    found_whatsapp_locations = []
-
-    for _dir in possible_whatsapp_locations:
-        if os.path.isdir(_dir):
-            found_whatsapp_locations.append(_dir)
+    found_whatsapp_locations = [
+        _dir for _dir in possible_whatsapp_locations
+        if os.path.isdir(_dir)
+    ]
 
     return found_whatsapp_locations

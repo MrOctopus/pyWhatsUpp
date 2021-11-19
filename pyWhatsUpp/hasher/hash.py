@@ -3,6 +3,7 @@ import hashlib
 
 def _generate_hashes(info):
     hash_file_path = os.path.join(info.output, "sha256hashes.csv")
+    successful = 0
     
     try:
         hash_file = open(hash_file_path, 'w+')
@@ -19,6 +20,7 @@ def _generate_hashes(info):
                         file_hash.update(b_block)
 
                 hash_file.write(f"\"{os.path.relpath(file_path, info.input)}\",{file_hash.hexdigest()}\n")
+                successful += 1
 
     except Exception as e:
         info.log.error(f"Encounted an error when hashing files: {e}")
@@ -27,7 +29,7 @@ def _generate_hashes(info):
     finally:
         hash_file.close()
 
-    info.log.info(f"Created new sha256 hash file")
+    info.log.info(f"Generated a total of '{successful}' sha256 file hashes")
 
     return True
 
