@@ -88,7 +88,7 @@ def run(args):
     # We get the top_dir using the __file__ variable to ensure
     # the CWD does not affect pathing
     top_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-    input_dir = os.path.join(top_dir, 'extracted')
+    input_dir = os.path.join(top_dir, 'collected')
     output_dir = os.path.join(top_dir, 'processed')
 
     # If no input folders exist make them

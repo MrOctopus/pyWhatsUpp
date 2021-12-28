@@ -2,21 +2,27 @@
 def get_event_type(string):
     string = string.lower()
 
-    if "action,message,chat" in string:
-        if "send:" in string:
-            return "User sent a message"
-    elif "action,msg,relay,chat" in string:
-        if "recv: " in string:
-            return "User received a message"
+    if "action," in string:
+        if "message,chat" in string:
+            if "send:" in string:
+                return "User sent a message"
+        elif "msg,relay,chat" in string:
+            if "recv: " in string:
+                return "User received a message"
+        elif "presence,unavailable" in string:
+            return "User is unavailable"
+        elif "presence,available" in string:
+            return "User is available"
+    elif "mediaviewermodal:" in string:
+        if "opened" in string:
+            return "User opened the media viewer"
+        elif "closed" in string:
+            return "User closed the media viewer"
     elif "networkstatus online" in string:
         return "User is online"
-    elif "action,presence,unavailable" in string:
-        return "User is unavailable"
-    elif "action,presence,available" in string:
-        return "User is available"
     elif "call, ..." in string:
         return "User is on a call"
-    elif "video.onloadeddata" in string:
+    elif "mediaload:video" in string:
         return "User has accessed a video"
     
     return "?"

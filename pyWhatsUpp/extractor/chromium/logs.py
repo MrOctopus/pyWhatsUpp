@@ -11,9 +11,12 @@ def _extract_event_logs(info, original_file, db_data):
     global _log_counter
     events = []
 
-    for row in db_data["logs"].iterate_records():
-        _dict = row.value
-        events.append(_dict["log"][5:])
+    # We need to sort the rows, because the logs are not sorted by timestamp
+    rows = [row.value for row in db_data["logs"].iterate_records()]
+    sorted_rows = sorted(rows, key = lambda row: row["timestamp"])
+
+    for row in sorted_rows:
+        events.append(row["log"][5:])
 
     if len(events) < 1:
         return False
