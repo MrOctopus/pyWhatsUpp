@@ -23,6 +23,7 @@ def get_event_type(string):
     elif "call, ..." in string:
         return "User is on a call"
     elif "mediaload:video" in string:
-        return "User has accessed a video"
+        if not ".onerror" in string:
+            return "User has accessed a video"
     
     return "?"
