@@ -20,6 +20,7 @@ def get():
     arg_parser.add_argument("-v", "--verbose", dest="verbose", help="Verbose mode", action="store_true", default=False)
     arg_parser.add_argument("-ha", "--hash", dest="hash", help="Generate hashes", action="store_true", default=False)
     arg_parser.add_argument("-a", "--automatic", dest="auto", help="Automatic detection", action="store_true", default=None)
+    arg_parser.add_argument("-si", "--strict-interpret", dest="strict", help="Strict interpretation", action="store_true", default=False)
     arg_parser.add_argument("-os", "--system", dest="os", help="OS type", type=_is_valid_os, default=None)
     arg_parser.add_argument("-i", "--input", dest="path", help="Directory path", type=_is_dir)
 

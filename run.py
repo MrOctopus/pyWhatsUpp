@@ -2,8 +2,8 @@ __author__ = "MrOctopus / Neverlost"
 
 import pyWhatsUpp.arguments as arguments
 import pyWhatsUpp.setup as setup
-import pyWhatsUpp.extractor as extractor
 import pyWhatsUpp.collector as collector
+import pyWhatsUpp.extractor as extractor
 import pyWhatsUpp.hasher as hasher
 
 def main():
@@ -21,18 +21,18 @@ def main():
 
     info.log.info("------------------------------------------------------------")
 
-    info.log.info("- Extracting all WhatsApp artifacts -")
-    if not extractor.run(info):
+    info.log.info("- Collecting all WhatsApp artifacts -")
+    if not collector.run(info):
         info.log.error("- Failed to find any WhatsApp artifacts, aborting. Consider trying other arguments -")
         # We return here because the other steps are not possible if the extractor did not finish
         return
 
-    info.log.info("- Collecting relevant WhatsApp forensic artifacts -")
-    if not collector.run(info):
-        info.log.error(" - Failed to find and collect any relevant forensic WhatsApp artifacts -")
+    info.log.info("- Extracting relevant WhatsApp forensic artifacts -")
+    if not extractor.run(info):
+        info.log.error(" - Failed to find and extracting any relevant forensic WhatsApp artifacts -")
 
     if info.hash:
-        info.log.info("- Hashing all extracted WhatsApp forensic artifacts -")     
+        info.log.info("- Hashing all collected WhatsApp forensic artifacts -")     
         if not hasher.run(info):
             info.log.error(" - Failed to generate hashes -")
 
@@ -40,7 +40,7 @@ def main():
 
     info.log.info("- Successfully finished running pyWhatsUpp -")
     info.log.info(f"Extracted session data can be found at: {info.input}")
-    info.log.info(f"Processed session data can be found at: {info.output}")
+    info.log.info(f"Processed/Collected session data can be found at: {info.output}")
 
 if __name__ == "__main__":
     main()

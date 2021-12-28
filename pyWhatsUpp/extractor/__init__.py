@@ -1,2 +1,2 @@
-__all__ = ('extract_linux', 'extract_mac', 'extract_windows', 'extract')
+__all__ = ('extract')
 from .extract import run

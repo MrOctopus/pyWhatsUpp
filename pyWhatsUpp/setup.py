@@ -1,4 +1,3 @@
-import sys
 import os
 import platform
 import logging
@@ -16,7 +15,8 @@ class SetupInfo:
         'output',
         'path',
         'auto',
-        'hash'
+        'hash',
+        'strict'
     )
 
     def __init__(self):
@@ -32,6 +32,7 @@ class SetupInfo:
         self.path = ''
         self.auto = True
         self.hash = False
+        self.strict = False
 
     def dump_to_output(self):
         if not os.path.exists(self.output):
@@ -87,7 +88,7 @@ def run(args):
     # We get the top_dir using the __file__ variable to ensure
     # the CWD does not affect pathing
     top_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-    input_dir = os.path.join(top_dir, 'original')
+    input_dir = os.path.join(top_dir, 'extracted')
     output_dir = os.path.join(top_dir, 'processed')
 
     # If no input folders exist make them
@@ -100,9 +101,9 @@ def run(args):
     info.input = os.path.join(input_dir, info.timestamp)
     info.output = os.path.join(output_dir, info.timestamp)
 
-    # Set extraction to automatic if flag is set
     info.auto = args.auto
     info.hash = args.hash
+    info.strict = args.strict
 
     # Set extract path if given
     if args.path:

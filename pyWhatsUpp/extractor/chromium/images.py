@@ -20,7 +20,7 @@ def _carve_file_for_jpeg(file_path):
 
     return images
 
-def _collect_avatar_images(info, original_file):
+def _extract_avatar_images(info, original_file):
     global _image_counter
     images = _carve_file_for_jpeg(original_file)
 
@@ -41,7 +41,7 @@ def _collect_avatar_images(info, original_file):
 
     return True
 
-def collect_images(info):
+def extract_images(info):
     cache_matches = glob.glob(
         os.path.join(info.input, '**', "*data_2"), 
         recursive=True)
@@ -49,6 +49,6 @@ def collect_images(info):
 
     for match in cache_matches: 
         if os.path.isfile(match):
-            successful += int(_collect_avatar_images(info, match))
+            successful += int(_extract_avatar_images(info, match))
 
     return successful

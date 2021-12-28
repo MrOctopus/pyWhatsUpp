@@ -7,7 +7,7 @@ from pyWhatsUpp.utils.interpreter import get_event_type
 
 _log_counter = 0
 
-def _collect_event_logs(info, original_file, db_data):
+def _extract_event_logs(info, original_file, db_data):
     global _log_counter
     events = []
 
@@ -24,25 +24,30 @@ def _collect_event_logs(info, original_file, db_data):
 
     with open(log_file, 'w+') as file:
         for event in events:
-            file.write(f"{event} | {get_event_type(event)}\n")
+            event_type = get_event_type(event)
+
+            if info.strict and event_type == '?':
+                continue
+
+            file.write(f"{event} | {event_type}\n")
     
     shutil.copystat(original_file, log_file)
     _log_counter += 1
 
     return True
 
-def _collect_general_data(info, db_data):    
+def _extract_general_data(info, db_data):    
     data = []
     
     for row in db_data["user"].iterate_records():
         data.append((
-            row.key.value,
-            row.value
+            row.value["key"],
+            row.value["value"]
         ))
     for row in db_data["wam"].iterate_records():
         data.append((
-            row.key.value,
-            row.value
+            row.value["key"],
+            row.value["value"]
         ))
 
     if len(data) < 1:
@@ -55,7 +60,7 @@ def _collect_general_data(info, db_data):
     
     return True
 
-def _collect_process_logs(info, original_file):
+def _extract_process_logs(info, original_file):
     global _log_counter
 
     process_logs_dir = os.path.join(info.output, "Chromium", "Process Logs")
@@ -70,7 +75,7 @@ def _collect_process_logs(info, original_file):
 
     return True
 
-def _collect_general_logs(info, original_file):
+def _extract_general_logs(info, original_file):
     global _log_counter
 
     general_logs_dir = os.path.join(info.output, "Chromium", "General Logs")
@@ -85,7 +90,7 @@ def _collect_general_logs(info, original_file):
 
     return True
 
-def collect_logs(info):
+def extract_logs(info):
     # Case insensitive search for Log files
     log_matches = glob.glob(
         os.path.join(info.input, '**', "*[Ll][Oo][Gg]*"), 
@@ -112,12 +117,12 @@ def collect_logs(info):
             except Exception as e:
                 continue
 
-            successful += int(_collect_event_logs(info, match, db_data))
-            successful += int(_collect_general_data(info, db_data))
+            successful += int(_extract_event_logs(info, match, db_data))
+            successful += int(_extract_general_data(info, db_data))
 
         elif "process" in match:
-            successful += int(_collect_process_logs(info, match))
+            successful += int(_extract_process_logs(info, match))
         else:
-            successful += int(_collect_general_logs(info, match))
+            successful += int(_extract_general_logs(info, match))
 
     return successful

@@ -1,52 +1,14 @@
-import os
-import shutil
-
-from . import extract_windows
-from . import extract_mac
-from . import extract_linux
-
-#from hashlib import sha256
-def _copy_files(info, whatsapp_dirs):
-    if (whatsapp_dirs is None) or (len(whatsapp_dirs) < 1):
-        return False 
-
-    # Create input and output dirs
-    os.mkdir(info.input)
-    os.mkdir(info.output)
-
-    for path in whatsapp_dirs:
-        sanitizied_path = path.replace(':', '_')
-        sanitizied_path = sanitizied_path.replace(os.path.sep, '_')
-        sanitizied_path = os.path.join(info.input, sanitizied_path)
-
-        # Copy using shutil to preserve most metadata
-        # shutil.copytree uses shutil.copy2 in the background 
-        # (See https://docs.python.org/3/library/shutil.html)
-
-        try:
-            shutil.copytree(path, sanitizied_path)
-        except Exception as e:
-            info.log.error(f"Encounted an error when extracting a folder: {e}")
-            info.log.error("This might have occured because a WhatsApp session is currently running")
-
-
-    info.log.info(f"Extracted a total of '{len(whatsapp_dirs)}' WhatsApp data folders")
-
-    return True
+from . import chromium
+from . import firefox
 
 def run(info):
-    os = info.os
+    successful_extractions = 0
 
-    # Manual
-    if (not info.auto) and (info.path):
-        print("manual")
-        whatsapp_dirs = [info.path]
-    # Automatic
-    elif os == "Windows":
-        whatsapp_dirs = extract_windows.run(info)
-    elif os == "Mac":
-        whatsapp_dirs = extract_mac.run(info)
-    elif os == "Linux":
-        whatsapp_dirs = extract_linux.run(info)
+    successful_extractions += chromium.extract(info)
+    successful_extractions += firefox.extract(info)
 
-    return _copy_files(info, whatsapp_dirs)
+    if successful_extractions < 1:
+        return False
+    else:
+        info.log.info(f"Extracted a total of '{successful_extractions}' WhatsApp artifact collections")
+        return True

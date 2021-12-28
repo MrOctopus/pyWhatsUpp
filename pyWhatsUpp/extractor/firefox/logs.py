@@ -7,7 +7,7 @@ from pyWhatsUpp.utils.interpreter import get_event_type
 
 _log_counter = 0
 
-def _collect_event_logs(info, original_file, db_data):
+def _extract_event_logs(info, original_file, db_data):
     global _log_counter
     events = []
 
@@ -29,15 +29,20 @@ def _collect_event_logs(info, original_file, db_data):
 
     with open(log_file, 'w+') as file:
         for key, event in events:
+            event_type = get_event_type(event)
             db_data.pop(key)
-            file.write(f"{event} | {get_event_type(event)}\n")
+
+            if info.strict and event_type == '?':
+                continue
+
+            file.write(f"{event} | {event_type}\n")
     
     shutil.copystat(original_file, log_file)
     _log_counter += 1
 
     return True
 
-def _collect_general_data(info, db_data):    
+def _extract_general_data(info, db_data):    
     data = []
     
     for _dict in db_data.values():
@@ -59,7 +64,7 @@ def _collect_general_data(info, db_data):
     
     return True
 
-def collect_logs(info):
+def extract_logs(info):
     # search for sqlite or Ldb files
     sqlite_matches = glob.glob(
         os.path.join(info.input, '**', "*wcaw.sqlite"), 
@@ -77,7 +82,7 @@ def collect_logs(info):
         except Exception:
             continue
 
-        successful += int(_collect_event_logs(info, match, db_data))
-        successful += int(_collect_general_data(info, db_data))
+        successful += int(_extract_event_logs(info, match, db_data))
+        successful += int(_extract_general_data(info, db_data))
 
     return successful

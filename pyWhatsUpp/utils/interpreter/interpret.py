@@ -1,3 +1,4 @@
+# See https://www.semanticscholar.org/paper/Browser-Forensic-Investigations-of-WhatsApp-Web-Paligu-Varol/0054508526255eff5c15de5ab3194591e842d731
 def get_event_type(string):
     string = string.lower()
 

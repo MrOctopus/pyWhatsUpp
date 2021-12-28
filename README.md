@@ -1,6 +1,6 @@
 # pyWhatsUpp
 
-A forensic tool to automatically extract as many artifacts as possible from the WhatsApp desktop/web client
+A forensic tool to automatically collect and extract as many artifacts as possible from the WhatsApp desktop/web client.
 
 ## Requirements
 
@@ -8,7 +8,7 @@ A forensic tool to automatically extract as many artifacts as possible from the 
 
 ## Features
 
-### Extraction
+### Collection
 
 * Automatic
     - From an automatically determined WhatsApp drive and OS (Useful for extraction on the same device)
@@ -16,7 +16,7 @@ A forensic tool to automatically extract as many artifacts as possible from the 
 * Manual
     - From a user defined WhatsApp data directory (Useful for unusual(?) WhatsApp locations)
 
-### Collection
+### Extraction
 
 * Cached contact avatars
 * General logs
@@ -35,7 +35,7 @@ A forensic tool to automatically extract as many artifacts as possible from the 
 ## Support
 
 Although pyWhatsUpp can be run on every platform that supports python,
-extraction can only be performed on data/mounts deriven from supported OSes.
+collection can only be performed on data/mounts deriven from supported OSes.
 
 ### OS
 
@@ -62,8 +62,11 @@ Not supported:
 ## Usage
 
 ```
-Run pyWhatsUpp in-place with automatic extraction:
+Run pyWhatsUpp in-place with automatic collection:
 python run.py
+
+Run pyWhatsUpp with strict interpretation (only output valid interpretations):
+python run.py -si
 
 Show verbose logs and generate sha256 hashes:
 python run.py -v -ha
@@ -71,12 +74,12 @@ python run.py -v -ha
 Run pyWhatsUpp on a specific WhatsApp folder
 python run.py -i folderpath
 
-Run pyWhatsUpp on a mounted windows installation drive and perform automatic extraction:
+Run pyWhatsUpp on a mounted windows installation drive and perform automatic collection:
 python run.py -a -os Windows -i mountedrootpath
 ```
 ### Notes
 
-Whilst pyWhatsUpp attempts to preserve the file metadata of extracted artifacts the best it can, a separate forensics image should also be made to ensure that the original file metadata can be compared against. Noteably, the python library that pyWhatsUpp uses to copy metadata (shutil) is not reliable enough to ensure the integrity of Accessed and Created timestamps.
+Whilst pyWhatsUpp attempts to preserve the file metadata of collected artifacts the best it can, a separate forensics image should also be made to ensure that the original file metadata can be compared against. Noteably, the python library that pyWhatsUpp uses to copy metadata (shutil) is not reliable enough to ensure the integrity of Accessed and Created timestamps.
 
 ## Thanks to
 
@@ -88,4 +91,7 @@ Whilst pyWhatsUpp attempts to preserve the file metadata of extracted artifacts 
 * Firefox IndexDB proprietary format formatting: https://stackoverflow.com/questions/54920939/parsing-fb-puritys-firefox-idb-indexed-database-api-object-data-blob-from-lin
 
 * Interpreting WhatsApp event logs: https://www.semanticscholar.org/paper/Browser-Forensic-Investigations-of-WhatsApp-Web-Paligu-Varol/0054508526255eff5c15de5ab3194591e842d731
+
+* General WhatsApp web/desktop data explanation: https://github.com/Enrico204/whatsapp-decoding/blob/master/PROTOCOL.md
+
 * General WhatsApp forensics know-how: https://blog.group-ib.com/whatsapp_forensic_artifacts

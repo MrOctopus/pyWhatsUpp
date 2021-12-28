@@ -104,6 +104,7 @@ venv.bak/
 
 # Input and output files
 /original
+/extracted
 /processed
 
 # Logs
