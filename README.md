@@ -11,7 +11,7 @@ A forensic tool to automatically collect and extract as many artifacts as possib
 ### Collection
 
 * Automatic
-    - From an automatically determined WhatsApp drive and OS (Useful for extraction on the same device)
+    - From an automatically determined WhatsApp drive and OS (Useful for collection on the same device)
     - From a user defined root directory/drive and OS (Useful for mounted drives)
 * Manual
     - From a user defined WhatsApp data directory (Useful for unusual(?) WhatsApp locations)
@@ -30,7 +30,7 @@ A forensic tool to automatically collect and extract as many artifacts as possib
 
 ### Hashing
 
-* pyWhatsUpp supports outputting a list of all extracted file hashes
+* pyWhatsUpp supports outputting a list of all collected file hashes
 
 ## Support
 
