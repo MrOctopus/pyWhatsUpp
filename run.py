@@ -1,4 +1,6 @@
+__description__ = "A forensic tool to automatically collect and extract as many artifacts as possible from the WhatsApp desktop/web client"
 __author__ = "MrOctopus / Neverlost"
+__version__ = "1.0"
 
 import pyWhatsUpp.arguments as arguments
 import pyWhatsUpp.setup as setup
