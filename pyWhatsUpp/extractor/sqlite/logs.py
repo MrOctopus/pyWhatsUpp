@@ -23,7 +23,7 @@ def _extract_event_logs(info, original_file, db_data):
     if len(events) < 1:
         return False
 
-    event_logs_dir = os.path.join(info.output, "Firefox", "Event Logs")
+    event_logs_dir = os.path.join(info.output, "SQLite", "Event Logs")
     os.makedirs(event_logs_dir, exist_ok=True)
     log_file = os.path.join(event_logs_dir, f"{_log_counter}.txt")
 
@@ -55,7 +55,7 @@ def _extract_general_data(info, db_data):
     if len(data) < 1:
         return False
 
-    info.extra_data.append("Firefox data,below")
+    info.extra_data.append("SQLite data,below")
     for key, value in data:
         info.extra_data.append(f"\"{key}\",\"{value}\"")
     info.extra_data.append("\n")

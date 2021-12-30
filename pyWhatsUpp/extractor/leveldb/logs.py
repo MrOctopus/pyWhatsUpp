@@ -21,7 +21,7 @@ def _extract_event_logs(info, original_file, db_data):
     if len(events) < 1:
         return False
 
-    event_logs_dir = os.path.join(info.output, "Chromium", "Event Logs")
+    event_logs_dir = os.path.join(info.output, "LevelDB", "Event Logs")
     os.makedirs(event_logs_dir, exist_ok=True)
     log_file = os.path.join(event_logs_dir, f"{_log_counter}.txt")
 
@@ -56,7 +56,7 @@ def _extract_general_data(info, db_data):
     if len(data) < 1:
         return False
 
-    info.extra_data.append("Chromium data,below")
+    info.extra_data.append("LevelDB data,below")
     for key, value in data:
         info.extra_data.append(f"\"{key}\",\"{value}\"")
     info.extra_data.append("\n")
@@ -66,7 +66,7 @@ def _extract_general_data(info, db_data):
 def _extract_process_logs(info, original_file):
     global _log_counter
 
-    process_logs_dir = os.path.join(info.output, "Chromium", "Process Logs")
+    process_logs_dir = os.path.join(info.output, "LevelDB", "Process Logs")
     os.makedirs(process_logs_dir, exist_ok=True)
     log_file = os.path.join(process_logs_dir, f"{_log_counter}_{os.path.basename(original_file)}")
 
@@ -81,7 +81,7 @@ def _extract_process_logs(info, original_file):
 def _extract_general_logs(info, original_file):
     global _log_counter
 
-    general_logs_dir = os.path.join(info.output, "Chromium", "General Logs")
+    general_logs_dir = os.path.join(info.output, "LevelDB", "General Logs")
     os.makedirs(general_logs_dir, exist_ok=True)
     log_file = os.path.join(general_logs_dir, f"{_log_counter}_{os.path.basename(original_file)}")
 

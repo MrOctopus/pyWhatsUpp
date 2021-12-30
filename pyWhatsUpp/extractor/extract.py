@@ -1,11 +1,11 @@
-from . import chromium
-from . import firefox
+from . import leveldb
+from . import sqlite
 
 def run(info):
     successful_extractions = 0
 
-    successful_extractions += chromium.extract(info)
-    successful_extractions += firefox.extract(info)
+    successful_extractions += leveldb.extract(info)
+    successful_extractions += sqlite.extract(info)
 
     if successful_extractions < 1:
         return False

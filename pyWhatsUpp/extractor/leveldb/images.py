@@ -27,7 +27,7 @@ def _extract_avatar_images(info, original_file):
     if len(images) < 1:
         return False
 
-    images_dir = os.path.join(info.output, "Chromium", "Contact Avatars")
+    images_dir = os.path.join(info.output, "LevelDB", "Contact Avatars")
     os.makedirs(images_dir, exist_ok=True)
         
     for image in images:
