@@ -16,6 +16,7 @@ def main():
 
     info.log.info(f"Automatic WhatsApp folder detection is set to: {info.auto}")
     info.log.info(f"The operating system is set to: {info.os}")
+    info.log.info(f"Strict interpretation is set to: {info.strict}")
     info.log.info("Session logs are stored in log.csv")
     
     if args.path:
