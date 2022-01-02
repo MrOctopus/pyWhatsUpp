@@ -1,11 +1,11 @@
 # See https://www.semanticscholar.org/paper/Browser-Forensic-Investigations-of-WhatsApp-Web-Paligu-Varol/0054508526255eff5c15de5ab3194591e842d731
 # See https://hammer.purdue.edu/articles/thesis/WhatsApp_Forensics_Locating_Artifacts_in_Web_and_Desktop_Clients/8029109/files/14954516.pdf
 
-# NOTE: This is a very inefficient way of doing interpretation.
-# There are way better ways of doing this, but it works for now.
+# NOTE: This is a very, VERY inefficient way of doing interpretation.
+# There are way better ways of doing this, but it works for now as POC.
 # Example of improving the speed drastically: Token parsing
 def get_event_type(event):
-    event = str.lower()
+    event = event.lower()
     
     if "action," in event:
         if ",presence" in event:

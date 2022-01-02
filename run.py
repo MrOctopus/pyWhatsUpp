@@ -15,8 +15,8 @@ def main():
     info.log.info("------------------------ pyWhatsUpp ------------------------")
 
     info.log.info(f"Automatic WhatsApp folder detection is set to: {info.auto}")
-    info.log.info(f"The operating system is set to: {info.os}")
     info.log.info(f"Strict interpretation is set to: {info.strict}")
+    info.log.info(f"The operating system is set to: {info.os}")
     info.log.info("Session logs are stored in log.csv")
     
     if args.path:
@@ -24,9 +24,9 @@ def main():
 
     info.log.info("------------------------------------------------------------")
 
-    info.log.info("- Collecting all WhatsApp artifacts -")
+    info.log.info("- Collecting all WhatsApp data -")
     if not collector.run(info):
-        info.log.error("- Failed to find any WhatsApp artifacts, aborting. Consider trying other arguments -")
+        info.log.error("- Failed to find any WhatsApp data, aborting. Consider trying other arguments -")
         # We return here because the other steps are not possible if the extractor did not finish
         return
 
