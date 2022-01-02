@@ -43,15 +43,18 @@ def _extract_general_data(info, db_data):
     data = []
     
     for row in db_data["user"].iterate_records():
-        data.append((
-            row.value["key"],
-            row.value["value"]
-        ))
+        if "value" in row.value:
+            data.append((
+                row.value["key"],
+                row.value["value"]
+            ))
+
     for row in db_data["wam"].iterate_records():
-        data.append((
-            row.value["key"],
-            row.value["value"]
-        ))
+        if "value" in row.value:
+            data.append((
+                row.value["key"],
+                row.value["value"]
+            ))
 
     if len(data) < 1:
         return False
