@@ -27,6 +27,8 @@ def _extract_event_logs(info, original_file, db_data):
     os.makedirs(event_logs_dir, exist_ok=True)
     log_file = os.path.join(event_logs_dir, f"{_log_counter}.txt")
 
+    info.log.info(f"Interpeting data in {log_file}")
+
     with open(log_file, 'w+') as file:
         for key, event in events:
             event_type = get_event_type(event)
