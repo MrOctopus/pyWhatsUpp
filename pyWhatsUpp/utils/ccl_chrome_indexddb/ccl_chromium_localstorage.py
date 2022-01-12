@@ -106,7 +106,7 @@ class LocalStorageRecord:
         self.script_key = script_key
         self.value = value
         self.leveldb_seq_number = leveldb_seq_number
-        self.is_live
+        self.is_live = is_live
 
     def __setattr__(self, name: str, value):
         raise AttributeError("FrozenInstance")
