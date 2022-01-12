@@ -26,7 +26,6 @@ import re
 import os
 import io
 import pathlib
-import dataclasses
 import enum
 from collections import namedtuple
 from types import MappingProxyType
@@ -78,12 +77,18 @@ def read_length_prefixed_blob(stream: typing.BinaryIO):
     return data
 
 
-@dataclasses.dataclass(frozen=True)
 class BlockHandle:
     """See: https://github.com/google/leveldb/blob/master/doc/table_format.md
     A BlockHandle contains an offset and length of a block in an ldb table file"""
-    offset: int
-    length: int
+    def __init__(self, offset: int, length: int):
+        self.offset = offset
+        self.length = length
+
+    def __setattr__(self, name: str, value):
+        raise AttributeError("FrozenInstance")
+
+    def __delattr__(self, name: str):
+        raise AttributeError("FrozenInstance")
 
     @classmethod
     def from_stream(cls, stream: typing.BinaryIO):
@@ -95,13 +100,19 @@ class BlockHandle:
             return BlockHandle.from_stream(stream)
 
 
-@dataclasses.dataclass(frozen=True)
 class RawBlockEntry:
     """Raw key, value for a record in a LDB file Block, along with the offset within the block from which it came from
     See: https://github.com/google/leveldb/blob/master/doc/table_format.md"""
-    key: bytes
-    value: bytes
-    block_offset: int
+    def __init__(self, key: bytes, value: bytes, block_offset: int):
+        self.key = key
+        self.value = value
+        self.block_offset = block_offset
+
+    def __setattr__(self, name: str, value):
+        raise AttributeError("FrozenInstance")
+
+    def __delattr__(self, name: str):
+        raise AttributeError("FrozenInstance")
 
 
 class FileType(enum.Enum):
@@ -115,19 +126,24 @@ class KeyState(enum.Enum):
     Unknown = 2
 
 
-@dataclasses.dataclass(frozen=True)
 class Record:
     """A record from leveldb; includes details of the origin file, state, etc."""
+    def __init__(self, key: bytes, value: bytes, seq: int, state: KeyState, file_type: FileType, origin_file: os.PathLike, offset: int, was_compressed: bool):
+        self.key = key
+        self.value = value
+        self.seq = seq
+        self.state = state
+        self.file_type = file_type
+        self.origin_file = origin_file
+        self.offset = offset
+        self.was_compressed = was_compressed
 
-    key: bytes
-    value: bytes
-    seq: int
-    state: KeyState
-    file_type: FileType
-    origin_file: os.PathLike
-    offset: int
-    was_compressed: bool
+    def __setattr__(self, name: str, value):
+        raise AttributeError("FrozenInstance")
 
+    def __delattr__(self, name: str):
+        raise AttributeError("FrozenInstance")
+    
     @property
     def user_key(self):
         if self.file_type == FileType.Ldb:
@@ -289,8 +305,10 @@ class LogFile:
     def _get_raw_blocks(self) -> typing.Iterable[bytes]:
         self._f.seek(0)
 
-        while chunk := self._f.read(LogFile.LOG_BLOCK_SIZE):
+        chunk = self._f.read(LogFile.LOG_BLOCK_SIZE)
+        while chunk:
             yield chunk
+            chunk = self._f.read(LogFile.LOG_BLOCK_SIZE) 
 
     def _get_batches(self) -> typing.Iterable[typing.Tuple[int, bytes]]:
         in_record = False
@@ -385,21 +403,39 @@ class VersionEditTag(enum.IntEnum):
     PrevLogNumber = 9
 
 
-@dataclasses.dataclass(frozen=True)
 class VersionEdit:
     """
     See:
     https://github.com/google/leveldb/blob/master/db/version_edit.h
     https://github.com/google/leveldb/blob/master/db/version_edit.cc
     """
-    comparator: str = None
-    log_number: int = None
-    prev_log_number: int = None
-    last_sequence: int = None
-    next_file_number: int = None
-    compaction_pointers: typing.Tuple[typing.Any] = tuple()
-    deleted_files: typing.Tuple[typing.Any] = tuple()
-    new_files: typing.Tuple[typing.Any] = tuple()
+    def __init__(self, comparator: str = None, log_number: int = None, prev_log_number: int = None, last_sequence: int = None, next_file_number: int = None, compaction_pointers: typing.Tuple[typing.Any] = None, deleted_files: typing.Tuple[typing.Any] = None, new_files: typing.Tuple[typing.Any] = None):
+        self.comparator = comparator
+        self.log_number = log_number
+        self.prev_log_number = prev_log_number
+        self.last_sequence = last_sequence
+        self.next_file_number = next_file_number
+
+        if compaction_pointers is None:
+            self.compaction_pointers = tuple()
+        else:
+            self.compaction_pointers = compaction_pointers
+
+        if deleted_files is None:
+            self.deleted_files = tuple()
+        else:
+            self.deleted_files = deleted_files
+
+        if new_files is None:
+            self.new_files = tuple()
+        else:
+            self.new_files = new_files
+
+    def __setattr__(self, name: str, value):
+        raise AttributeError("FrozenInstance")
+
+    def __delattr__(self, name: str):
+        raise AttributeError("FrozenInstance")
 
     @classmethod
     def from_buffer(cls, buffer: bytes):
@@ -466,7 +502,8 @@ class ManifestFile:
     MANIFEST_FILENAME_PATTERN = "MANIFEST-([0-9A-F]{6})"
 
     def __init__(self, path: pathlib.Path):
-        if match := re.match(ManifestFile.MANIFEST_FILENAME_PATTERN, path.name):
+        match = re.match(ManifestFile.MANIFEST_FILENAME_PATTERN, path.name)
+        if match:
             self.file_no = int(match.group(1))
         else:
             raise ValueError("Invalid name for Manifest")
@@ -485,8 +522,10 @@ class ManifestFile:
     def _get_raw_blocks(self) -> typing.Iterable[bytes]:
         self._f.seek(0)
 
-        while chunk := self._f.read(LogFile.LOG_BLOCK_SIZE):
+        chunk = self._f.read(LogFile.LOG_BLOCK_SIZE)
+        while chunk:
             yield chunk
+            chunk = self._f.read(LogFile.LOG_BLOCK_SIZE)
 
     def _get_batches(self) -> typing.Iterable[typing.Tuple[int, bytes]]:
         in_record = False

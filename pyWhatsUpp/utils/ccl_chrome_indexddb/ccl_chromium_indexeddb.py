@@ -27,7 +27,6 @@ import pathlib
 import io
 import enum
 import datetime
-import dataclasses
 import types
 import typing
 
@@ -200,22 +199,31 @@ class IndexedDBExternalObject:
             raise NotImplementedError()
 
 
-@dataclasses.dataclass(frozen=True)
 class DatabaseId:
-    dbid_no: int
-    origin: str
-    name: str
+    def __init__(self, dbid_no: int, origin: str, name: str):
+        self.dbid_no = dbid_no
+        self.origin = origin
+        self.name = name
+
+    def __setattr__(self, name: str, value):
+        raise AttributeError("FrozenInstance")
+
+    def __delattr__(self, name: str):
+        raise AttributeError("FrozenInstance")
 
 
 class GlobalMetadata:
     def __init__(self, raw_meta_dict: dict):
         # TODO: more of these meta types if required
         self.backing_store_schema_version = None
-        if raw_schema_version := raw_meta_dict.get("\x00\x00\x00\x00\x00"):
+        raw_schema_version = raw_meta_dict.get("\x00\x00\x00\x00\x00")
+
+        if raw_schema_version:
             self.backing_store_schema_version = le_varint_from_bytes(raw_schema_version)
 
         self.max_allocated_db_id = None
-        if raw_max_db_id := raw_meta_dict.get("\x00\x00\x00\x00\x01"):
+        raw_max_db_id = raw_meta_dict.get("\x00\x00\x00\x00\x01")
+        if raw_max_db_id:
             self.max_allocated_db_id = le_varint_from_bytes(raw_max_db_id)
 
         database_ids_raw = (raw_meta_dict[x] for x in raw_meta_dict
@@ -469,7 +477,8 @@ class IndexedDb:
         if db_id > 0x7f or store_id > 0x7f:
             raise NotImplementedError("there could be this many dbs, but I don't support it yet")
 
-        if result := self._blob_lookup_cache.get((db_id, store_id, raw_key, file_index)):
+        result = self._blob_lookup_cache.get((db_id, store_id, raw_key, file_index))
+        if result:
             return result
 
         # goodness me this is a slow way of doing things,
@@ -485,7 +494,8 @@ class IndexedDb:
                     idx += 1
                 break
 
-        if result := self._blob_lookup_cache.get((db_id, store_id, raw_key, file_index)):
+        result = self._blob_lookup_cache.get((db_id, store_id, raw_key, file_index))
+        if result:
             return result
         else:
             raise KeyError((db_id, store_id, raw_key, file_index))

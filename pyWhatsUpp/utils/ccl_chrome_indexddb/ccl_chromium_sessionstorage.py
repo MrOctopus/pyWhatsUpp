@@ -22,7 +22,6 @@ SOFTWARE.
 import sys
 import pathlib
 import typing
-import dataclasses
 from types import MappingProxyType
 
 from . import ccl_leveldb
@@ -40,11 +39,17 @@ _MAP_ID_PREFIX = b"map-"
 log = None
 
 
-@dataclasses.dataclass(frozen=True)
 class SessionStoreValue:
-    value: str
-    guid: typing.Optional[str]
-    leveldb_sequence_number: int
+    def __init__(self, value: str, guid: typing.Optional[str], leveldb_sequence_number: int):
+        self.value = value
+        self.guid = guid
+        self.leveldb_sequence_number = leveldb_sequence_number
+
+    def __setattr__(self, name: str, value):
+        raise AttributeError("FrozenInstance")
+
+    def __delattr__(self, name: str):
+        raise AttributeError("FrozenInstance")
 
 
 class SessionStoreDb:

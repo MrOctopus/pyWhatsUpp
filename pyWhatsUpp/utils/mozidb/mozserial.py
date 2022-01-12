@@ -147,7 +147,7 @@ class JSRegExpObj:
         self.flags = flags
     
     @classmethod
-    def from_re(cls, regex: re.Pattern) -> 'JSRegExpObj':
+    def from_re(cls, regex):
         flags = RegExpFlag.GLOBAL
         if regex.flags | re.DOTALL:
             pass  # Not supported in current (2020-01) version of SpiderMonkey
@@ -157,7 +157,7 @@ class JSRegExpObj:
             flags |= RegExpFlag.MULTILINE
         return cls(regex.pattern, flags)
     
-    def to_re(self) -> re.Pattern:
+    def to_re(self):
         flags = 0
         if self.flags | RegExpFlag.IGNORE_CASE:
             flags |= re.IGNORECASE

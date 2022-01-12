@@ -25,7 +25,6 @@ import sys
 import pathlib
 import types
 import typing
-import dataclasses
 import datetime
 
 from . import ccl_leveldb
@@ -71,12 +70,18 @@ def decode_string(raw: bytes) -> str:
         raise ValueError("Unexpected prefix, please contact developer")
 
 
-@dataclasses.dataclass(frozen=True)
 class StorageMetadata:
-    storage_key: str
-    timestamp: datetime.datetime
-    size_in_bytes: int
-    leveldb_seq_number: int
+    def __init__(self, storage_key: str, timestamp: datetime.datetime, size_in_bytes: int, leveldb_seq_number: int):
+        self.storage_key = storage_key
+        self.timestamp = timestamp
+        self.size_in_bytes = size_in_bytes
+        self.leveldb_seq_number = leveldb_seq_number
+
+    def __setattr__(self, name: str, value):
+        raise AttributeError("FrozenInstance")
+
+    def __delattr__(self, name: str):
+        raise AttributeError("FrozenInstance")
 
     @classmethod
     def from_protobuff(cls, storage_key: str, data: bytes, seq: int):
@@ -95,13 +100,19 @@ class StorageMetadata:
             return cls(storage_key, timestamp, size, seq)
 
 
-@dataclasses.dataclass(frozen=True)
 class LocalStorageRecord:
-    storage_key: str
-    script_key: str
-    value: str
-    leveldb_seq_number: int
-    is_live: bool
+    def __init__(self, storage_key: str, script_key: str, value: str, leveldb_seq_number: int, is_live: bool):
+        self.storage_key = storage_key
+        self.script_key = script_key
+        self.value = value
+        self.leveldb_seq_number = leveldb_seq_number
+        self.is_live
+
+    def __setattr__(self, name: str, value):
+        raise AttributeError("FrozenInstance")
+
+    def __delattr__(self, name: str):
+        raise AttributeError("FrozenInstance")
 
 
 class LocalStorageBatch:

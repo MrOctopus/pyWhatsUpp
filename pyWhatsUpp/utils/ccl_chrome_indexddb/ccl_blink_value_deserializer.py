@@ -23,7 +23,6 @@ SOFTWARE.
 import sys
 import enum
 import typing
-from dataclasses import dataclass
 
 from . import ccl_v8_value_deserializer
 
@@ -66,11 +65,10 @@ class BlobIndexType(enum.Enum):
     Blob = 0
     File = 1
 
-
-@dataclass
 class BlobIndex:
-    index_type: BlobIndexType
-    index_id: int
+    def __init__(self, index_type: BlobIndexType, index_id: int):
+        self.index_type = index_type
+        self.index_id = index_id
 
 
 class Constants:
